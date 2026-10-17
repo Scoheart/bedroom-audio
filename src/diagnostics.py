@@ -11,13 +11,16 @@ from common import RESOURCE,write_json
 def self_check(folder):
     result={'ok':False,'frozen':bool(getattr(sys,'frozen',False)),'checks':[]}
     try:
-        for name in ('tkinter','pyatv','aiohttp','zeroconf','miniaudio','av',
+        for name in ('tkinter','device_setup','pyatv','aiohttp','zeroconf','miniaudio','av',
                      'pyaudiowpatch','psutil','pycaw.pycaw','comtypes',
                      'cryptography.hazmat.primitives.ciphers.aead'):
             importlib.import_module(name)
             result['checks'].append('import '+name)
         assert (RESOURCE/'bedroom.ico').stat().st_size>100
         result['checks'].append('bundled resources')
+        from device_setup import selection_config
+        assert selection_config({'id':'AABBCCDDEE01'}, {'id':'AABBCCDDEE02'})['preferred_receiver']==''
+        result['checks'].append('first-run configuration imports and selection')
         import av
         from engine import wrap_alac,apply_volume
         codec=av.CodecContext.create('alac','r')

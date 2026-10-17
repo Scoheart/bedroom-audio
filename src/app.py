@@ -14,6 +14,7 @@ import time
 import wave
 import winsound
 import common
+from version import VERSION
 
 BG='#F3F6FA';WHITE='#FFFFFF';INK='#19283D';MUTED='#69778C'
 BLUE='#2264E8';GREEN='#12805C';RED='#BE3948';LINE='#E1E7F0'
@@ -21,6 +22,9 @@ FONT='Microsoft YaHei UI'
 
 def main():
     parser=argparse.ArgumentParser()
+    parser.add_argument('--version', action='version', version='Bedroom Audio '+VERSION)
+    parser.add_argument('--configure', action='store_true')
+    parser.add_argument('--output', help='Write discovery JSON to a file (useful for the GUI executable).')
     parser.add_argument('--worker',action='store_true')
     parser.add_argument('--data-dir')
     parser.add_argument('--scan',action='store_true')
@@ -39,18 +43,25 @@ def main():
         raise SystemExit(0 if result['ok'] else 1)
     if args.list_receivers:
         import json
-        print(json.dumps(asyncio.run(common.list_receivers()), ensure_ascii=False, indent=2))
+        receivers=asyncio.run(common.list_receivers())
+        if args.output:
+            common.write_json(Path(args.output), receivers)
+        elif sys.stdout is not None:
+            print(json.dumps(receivers, ensure_ascii=False, indent=2))
+        else:
+            common.write_json(folder/'receivers.json', receivers)
         return
+    if args.configure and not args.worker and not args.scan:
+        from device_setup import run_setup
+        if not run_setup(folder):return
     try:
         common.configure_devices(folder)
     except ValueError as error:
         if not args.worker and not args.scan:
-            import tkinter as tk
-            from tkinter import messagebox
-            root = tk.Tk(); root.withdraw()
-            messagebox.showerror(common.TITLE, str(error), parent=root)
-            root.destroy()
-        raise
+            from device_setup import run_setup
+            if not run_setup(folder, str(error)):return
+            common.configure_devices(folder)
+        else:raise
     if args.worker:
         from engine import worker
         if args.parent_pid:
@@ -62,7 +73,10 @@ def main():
         from realtime import run_audio
         run_audio(worker(folder));return
     if args.scan:
-        print(asyncio.run(common.discover(folder,force=True)));return
+        records=asyncio.run(common.discover(folder,force=True))
+        if args.output:common.write_json(Path(args.output), records)
+        elif sys.stdout is not None:print(records)
+        return
     import tkinter as tk
     from tkinter import ttk
     from latency import mode_name

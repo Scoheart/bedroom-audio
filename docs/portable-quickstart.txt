@@ -1,0 +1,26 @@
+Bedroom Audio 0.1.0 · Windows x64 便携版
+
+不需要安装 Python。请先把 ZIP 完整解压到一个固定文件夹，不能直接在压缩包里运行。
+
+1. 在 Apple「家庭」App 中把两台 HomePod 组成一个立体声对，并让 Windows 连接到可以访问音箱的同一局域网。
+2. 双击 BedroomAudio.exe。首次启动会打开音箱选择窗口，扫描后分别选择两台 HomePod，点击「保存并继续」。
+3. 退出其他向这对音箱转发声音的软件，再点击「启动转发」，在电脑上播放音乐。
+4. 用界面里的 HomePod 音量调节音箱；首次测试建议从较低音量开始。
+5. 默认 100 ms 是发送端播放预留，并非实测端到端延迟。遇到无声先切换「兼容 · 150 ms」。
+6. 如果提示 UDP 时钟超时，可以点击「修复网络许可」。仅此操作需要管理员确认。
+
+需要重新选择音箱时，先关闭主界面，再双击 Configure-HomePods.cmd。
+这只是以 --configure 参数打开同一个 EXE，不需要 PowerShell 或 Python 安装。
+现有 config.json 会先在本机备份，音量设置不会被覆盖。
+
+设置目录：%LOCALAPPDATA%\BedroomAudio
+关闭窗口会停止转发。移动程序时请保留整个文件夹及 _internal、LICENSES。
+程序没有 Windows 服务，也不会自动设置开机启动。
+
+首次预览版本：公开配置版尚未重新进行真实双箱听音验证。
+当前仅提供 Windows x64 包；不是 Windows ARM64 原生包。
+此 EXE 未做代码签名。只从本项目 Release 下载，并可核对同页 .sha256 文件。
+
+更多说明：docs/troubleshooting.md
+源码与问题反馈：https://github.com/Scoheart/bedroom-audio
+第三方许可证：LICENSES 文件夹；源码获取信息：THIRD_PARTY_SOURCES.md。

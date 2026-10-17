@@ -4,6 +4,19 @@
 
 项目参考 TuneBlade 的系统音频转发体验与实时响应目标。它是独立的实验性项目，与 TuneBlade 或 Apple 没有隶属关系。
 
+## 直接下载 Windows 便携版（无需 Python）
+
+前往 [v0.1.0 Release](https://github.com/Scoheart/bedroom-audio/releases/tag/v0.1.0)，下载 **BedroomAudio-0.1.0-windows-x64-portable.zip**。这是首次预览版本，适用于 Windows x64。
+
+1. 完整解压 ZIP，双击 `BedroomAudio.exe`。
+2. 首次启动会自动发现音箱，分别选择已组成立体声对的两台 HomePod，点击「保存并继续」。
+3. 在主界面点击「启动转发」，再播放电脑声音。普通使用无需管理员权限；仅手动修复网络规则时会请求提权。
+4. 以后重新选择音箱：先关闭主界面，再双击包内 `Configure-HomePods.cmd`。
+
+随包带有 Python 运行时、依赖、中文快速说明和第三方许可证。不需要安装 Python、pip 或运行 PowerShell 安装脚本。请保留整个目录，不能只复制 EXE；第一次可能需要 Windows 网络许可。程序没有代码签名，可用 Release 的 `.sha256` 文件核对下载完整性。
+
+GitHub 自动生成的 **Source code (zip)** 是源码；普通使用请选择上面的 **windows-x64-portable.zip**。完整步骤见 [便携版快速说明](docs/portable-quickstart.txt)。
+
 ## 当前能力与验证范围
 
 - 向已在 Apple「家庭」App 中组成的 HomePod 立体声对发送一条音频流，由接收器侧完成双箱播放。
@@ -20,7 +33,7 @@
 
 ## 环境要求
 
-- Windows x64；本次整理使用 **Python 3.12.6 x64**，安装 Python 时保留 Tcl/Tk 和 pip。
+- Windows x64。直接使用 Release 包不需要安装 Python；源码运行与构建使用 **Python 3.12.6 x64**，安装 Python 时保留 Tcl/Tk 和 pip。
 - Windows 与 HomePod 在可以直接通信的局域网；已在「家庭」App 中建立立体声对。
 - 本项目目前没有 PIN/密码配对界面。要求强制认证的接收器可能无法使用；遇到认证要求请停止，不需要为此更改家庭访问策略。
 - 本机默认输出设备提供 WASAPI Loopback；修改 Windows 默认输出后需停止并重新启动转发。
@@ -68,7 +81,7 @@ py -3.12 -m venv .venv
    .\.venv\Scripts\python.exe src/app.py
    ```
 
-配置修改后请重启程序。ID 对应的 IP 通过发现更新，不需要在源码中写死。仓库不包含任何真实设备 ID、IP、配对缓存或凭据。
+也可以直接运行 `src/app.py`，让首次启动的设备选择窗口完成这些步骤；使用 `--configure` 可重新配置。手动修改配置后请重启程序。ID 对应的 IP 通过发现更新，不需要在源码中写死。仓库不包含任何真实设备 ID、IP、配对缓存或凭据。
 
 ## 使用
 
@@ -90,11 +103,9 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe src/build.py
 ```
 
-产物：`dist/BedroomAudio/BedroomAudio.exe` 和 `dist/BedroomAudio-portable.zip`。复制或移动时保留整个 `BedroomAudio` 文件夹和 `_internal`，不能只复制 EXE。需要更新时先退出旧程序，再解压到新的文件夹。
+产物：`dist/BedroomAudio/BedroomAudio.exe`、`dist/BedroomAudio-0.1.0-windows-x64-portable.zip` 及同名 `.sha256`。复制或移动时保留整个 `BedroomAudio` 文件夹、`_internal` 与 `LICENSES`，不能只复制 EXE。需要更新时先退出旧程序，再解压到新的文件夹。
 
-第一次使用打包版仍需创建 `%LOCALAPPDATA%\BedroomAudio\config.json`；配置不会嵌入 EXE，也不会在构建时从当前电脑自动导出。可以先用源码的 `--list-receivers` 配置，再使用 EXE。
-
-目前仓库提供源码与构建说明，未发布 GitHub Release 二进制安装包。旧定制版压缩包包含设备预置，未作为公共产物上传。
+第一次使用打包版的设备选择窗口会创建 `%LOCALAPPDATA%\BedroomAudio\config.json`；配置不会嵌入 EXE，也不会在构建时从当前电脑自动导出。旧定制版包含个人设备预置，未作为公共产物上传。Release 另附第三方原生库源码与构建配方，普通使用不需要下载。
 
 ## 网络、日志与重装
 

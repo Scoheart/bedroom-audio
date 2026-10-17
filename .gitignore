@@ -26,4 +26,6 @@ worker.json
 *.request
 *-check.json
 network-repair.json
+receivers.json
+config.backup.*.json
 *.tmp
