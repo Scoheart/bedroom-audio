@@ -1,0 +1,7 @@
+{
+  "devices": [
+    {"id": "AABBCCDDEE01", "name": "HomePod 左"},
+    {"id": "AABBCCDDEE02", "name": "HomePod 右"}
+  ],
+  "preferred_receiver": ""
+}
